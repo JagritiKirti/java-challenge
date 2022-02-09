@@ -37,7 +37,7 @@ public class SwaggerConfig {
 
 	private ApiKey apiKey() { 
 		return new ApiKey(JWTConstant.API_KEY_NAME, 
-				JWTConstant.SWAGGER_AUTHORIZATION_HEADER, SwaggerContant.API_KEY_PASS_AS); 
+				JWTConstant.AUTHORIZATION_HEADER, SwaggerContant.API_KEY_PASS_AS); 
 	}
 
 	private ApiInfo apiInfo(){
