@@ -4,6 +4,7 @@ import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.model.EmployeeDetails;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.ApiOperation;
@@ -24,42 +25,44 @@ public class EmployeeController {
 
     @ApiOperation(value = "This method is used to fetch the list of employees")
     @GetMapping("/employees")
-    public List<EmployeeDetails> getEmployees() {
+    public ResponseEntity<List<EmployeeDetails>> getEmployees() {
         List<Employee> employees = employeeService.retrieveEmployees();
         List<EmployeeDetails> employeesResponse = employees.stream().map(
         		e -> new EmployeeDetails(e)).collect(Collectors.toList());
-        return employeesResponse;
+        return ResponseEntity.ok().body(employeesResponse);
     }
 
     @ApiOperation(value = "This method is used to fetch the employee data for given employee ID")
     @GetMapping("/employees/{employeeId}")
-    public EmployeeDetails getEmployee(@PathVariable(name="employeeId")Long employeeId) {    	
-    	
-        return new EmployeeDetails(employeeService.getEmployee(employeeId));
+    public ResponseEntity<EmployeeDetails> getEmployee(@PathVariable(name="employeeId")Long employeeId) {    	
+    	EmployeeDetails employee = new EmployeeDetails(employeeService.getEmployee(employeeId));
+        return ResponseEntity.ok().body(employee);      
     }
 
     @ApiOperation(value = "This method is used to save employee record")
     @PostMapping("/employees")
-    public void saveEmployee(@RequestBody EmployeeDetails employeeDetails){
+    public ResponseEntity<String> saveEmployee(@RequestBody EmployeeDetails employeeDetails){
     	
         employeeService.saveEmployee(new Employee(employeeDetails));
-        System.out.println("Employee Saved Successfully");
+        return ResponseEntity.ok().body("Employee Saved Successfully");
     }
 
     @ApiOperation(value = "This method is used to delete the employee record based on employee ID")
     @DeleteMapping("/employees/{employeeId}")
-    public void deleteEmployee(@PathVariable(name="employeeId")Long employeeId){
+    public ResponseEntity<String>  deleteEmployee(@PathVariable(name="employeeId")Long employeeId){
         employeeService.deleteEmployee(employeeId);
-        System.out.println("Employee Deleted Successfully");
+        return ResponseEntity.ok().body("Employee Deleted Successfully");
     }
 
     @ApiOperation(value = "This method is used to employee record")
     @PutMapping("/employees/{employeeId}")
-    public void updateEmployee(@RequestBody EmployeeDetails employeeDetails,
+    public ResponseEntity<String> updateEmployee(@RequestBody EmployeeDetails employeeDetails,
                                @PathVariable(name="employeeId")Long employeeId){
         Employee emp = employeeService.getEmployee(employeeId);
         if(emp != null){
             employeeService.updateEmployee(new Employee(employeeDetails));
-        }
+            return ResponseEntity.ok().body("Employee record updated successfully");
+        }      
+        return ResponseEntity.badRequest().body("No employee record found");
     }
 }
