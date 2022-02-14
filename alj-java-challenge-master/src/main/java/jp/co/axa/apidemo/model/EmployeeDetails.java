@@ -20,6 +20,14 @@ public class EmployeeDetails {
 		this.department = employee.getDepartment();
 	}
 
+	public EmployeeDetails(Long id, String name, Double salary, String department) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.salary = salary;
+		this.department = department;
+	}
+	
 	@Getter
 	@Setter
 	private Long id;

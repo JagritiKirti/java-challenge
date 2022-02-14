@@ -28,6 +28,15 @@ public class Employee {
 		this.salary = employeeDetails.getSalary();
 		this.department = employeeDetails.getDepartment();
 	}
+    
+	public Employee(Long id, String name, Double salary, String department) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.salary = salary;
+		this.department = department;
+	}
+
 
 	@Getter
     @Setter
