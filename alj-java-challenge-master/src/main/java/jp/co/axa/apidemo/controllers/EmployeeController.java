@@ -1,11 +1,13 @@
 package jp.co.axa.apidemo.controllers;
 
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.model.EmployeeDetails;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -19,19 +21,23 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public List<Employee> getEmployees() {
+    public List<EmployeeDetails> getEmployees() {
         List<Employee> employees = employeeService.retrieveEmployees();
-        return employees;
+        List<EmployeeDetails> employeesResponse = employees.stream().map(
+        		e -> new EmployeeDetails(e)).collect(Collectors.toList());
+        return employeesResponse;
     }
 
     @GetMapping("/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable(name="employeeId")Long employeeId) {
-        return employeeService.getEmployee(employeeId);
+    public EmployeeDetails getEmployee(@PathVariable(name="employeeId")Long employeeId) {    	
+    	
+        return new EmployeeDetails(employeeService.getEmployee(employeeId));
     }
 
     @PostMapping("/employees")
-    public void saveEmployee(Employee employee){
-        employeeService.saveEmployee(employee);
+    public void saveEmployee(@RequestBody EmployeeDetails employeeDetails){
+    	
+        employeeService.saveEmployee(new Employee(employeeDetails));
         System.out.println("Employee Saved Successfully");
     }
 
@@ -42,11 +48,11 @@ public class EmployeeController {
     }
 
     @PutMapping("/employees/{employeeId}")
-    public void updateEmployee(@RequestBody Employee employee,
+    public void updateEmployee(@RequestBody EmployeeDetails employeeDetails,
                                @PathVariable(name="employeeId")Long employeeId){
         Employee emp = employeeService.getEmployee(employeeId);
         if(emp != null){
-            employeeService.updateEmployee(employee);
+            employeeService.updateEmployee(new Employee(employeeDetails));
         }
 
     }

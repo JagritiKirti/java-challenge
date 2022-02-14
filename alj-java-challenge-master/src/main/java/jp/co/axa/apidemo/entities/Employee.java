@@ -10,11 +10,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import jp.co.axa.apidemo.model.EmployeeDetails;
+
 @Entity
 @Table(name="EMPLOYEE")
 public class Employee {
+	
+	//Default Constructor
+	public Employee() {
+		
+	}
+	
+    public Employee(EmployeeDetails employeeDetails) {
+		super();
+		this.id = employeeDetails.getId();
+		this.name = employeeDetails.getName();
+		this.salary = employeeDetails.getSalary();
+		this.department = employeeDetails.getDepartment();
+	}
 
-    @Getter
+	@Getter
     @Setter
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -28,7 +43,7 @@ public class Employee {
     @Getter
     @Setter
     @Column(name="EMPLOYEE_SALARY")
-    private Integer salary;
+    private Double salary;
 
     @Getter
     @Setter
